@@ -21,14 +21,14 @@ public class PobieraczPogody implements IntPobieraczPogody{
     public Weather pobierzPogodeDlaPunktu(Point selectedPoint, Data date) {
         String url = "http://www.traxelektronik.pl/pogoda/zbiorcza.php?" +
                          "RejID=14&czas=0&lang=0&over=0"+
-                         "rok="+date.rok+
-                         "mies="+String.format("%02d",date.miesiac)+
-                         "dzien="+String.format("%02d",date.dzien)+
-                         "godz="+String.format("%02d",date.godzina)+
-                         "min="+String.format("%02d",date.minuta);
+                         "&rok="+date.rok+
+                         "&mies="+String.format("%02d",date.miesiac)+
+                         "&dzien="+String.format("%02d",date.dzien)+
+                         "&godz="+String.format("%02d",date.godzina)+
+                         "&min="+String.format("%02d",date.minuta);
 
         new HTMLDownloader().executeOnExecutor(AsyncTask.SERIAL_EXECUTOR, url);
-
+        System.out.println(url);
         while(stacje.size() < 27){
             try {
                 Thread.sleep(1000);
@@ -42,8 +42,10 @@ public class PobieraczPogody implements IntPobieraczPogody{
         for(int i =0 ; i<27; i++){
             Weather stacja = stacje.get(i);
             if(selectedPoint.countDistance(this.zwrocWspolrzedneStacji(stacja.name)) < distance || distance == -1){
-                distance = selectedPoint.countDistance(this.zwrocWspolrzedneStacji(stacja.name));
-                najblizszaStacja = stacja;
+                if(!stacja.airTemperature.equals("-") && !(stacja.windSpeed.equals("-")) && !(stacja.rain.equals("-")) && !(stacja.surface.equals("-"))){
+                    distance = selectedPoint.countDistance(this.zwrocWspolrzedneStacji(stacja.name));
+                    najblizszaStacja = stacja;
+                }
             }
         }
 
@@ -66,19 +68,12 @@ public class PobieraczPogody implements IntPobieraczPogody{
                     Weather stacja = new Weather();
 
                     stacja.name = rowItems.get(0).text().substring(1);
-                    try {
-                        stacja.airTemperature = Double.parseDouble(rowItems.get(1).text().replaceAll("[↓↑-]", ""));
-                    }catch(NumberFormatException ex) {
-                        stacja.airTemperature = 0.0;
-                    }
+                    stacja.airTemperature = rowItems.get(1).text().replaceAll("[↓↑-]", "");
+                    if (stacja.airTemperature == "") stacja.airTemperature = "-";
                     stacja.rain = rowItems.get(11).text();
                     stacja.surface = rowItems.get(14).text();
-
-                    try {
-                        stacja.windSpeed = Double.parseDouble(rowItems.get(19).text().replaceAll("[↓↑-]", ""));
-                    }catch(NumberFormatException ex) {
-                        stacja.windSpeed = 0.0;
-                    }
+                    stacja.windSpeed = rowItems.get(19).text().replaceAll("[↓↑-]", "");
+                    if (stacja.windSpeed == "") stacja.windSpeed = "-";
 
                     stacje.add(stacja);
                 }
