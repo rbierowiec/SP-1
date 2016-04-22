@@ -1,49 +1,44 @@
 package main.run;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.EditText;
+
+import main.calendarlib.CalendarOperations;
 import main.weatherlib.PobieraczPogody;
 import com.softeq.android.prepopdb.R;
+
+import java.util.Date;
+import java.util.List;
 
 import main.additional.*;
 
 public class MainActivity extends AppCompatActivity {
+
+    private EditText editText1, editText2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-    }
+        editText1 = (EditText)findViewById(R.id.editText);
+        editText2 = (EditText)findViewById(R.id.editText2);
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
     }
 
     public void dzialaj(View view){
         PobieraczPogody stacja = new PobieraczPogody();
-        Weather pogoda = stacja.pobierzPogodeDlaPunktu(new Point(19.815901, 50.039030), new Data(2016,4,9,21,0,0));
-        System.out.println("Najbliższa stacja: "+pogoda.name+", temperatura: "+pogoda.airTemperature+", opady: "+pogoda.rain+", nawierzchnia: "+pogoda.surface+", prędkość wiatru: "+pogoda.windSpeed);
+
+        CalendarOperations kalendarz = new CalendarOperations();
+        List<CalendarEvent> eventy = kalendarz.zwrocWydarzeniaPomiedzyDatami("2016-04-22 00:00:00", "2016-04-22 23:59:59", this);
+
+        for (CalendarEvent event : eventy) {
+            System.out.println(event.getTitle() + " " + event.getEventID()+ " " + event.getCalendarID() + " " + Data.convertMilisToData(event.getStartDate()) + " " + Data.convertMilisToData(event.getEndDate()));
+        }
     }
 }
