@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Doradca Aktywności</string>
+    <string name="title_activity_summary">Podsumowanie</string>
+
+    <string name="action_settings">Settings</string>
+    <string name="smog_number">Smog (wartość)</string>
+    <string name="smog_descriptive">Smog (opis)</string>
+    <string name="weather_descriptive">Pogoda</string>
+    <string name="no_service_default_message">Funkcjonalność niedostępna</string>
+    <string name="ridetime_descriptive">Czas dojazdu</string>
+    <string name="choice_label_text">Wybrane miejsce</string>
+</resources>
