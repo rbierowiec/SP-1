@@ -74,6 +74,7 @@ public class MainActivity extends ListActivity implements
 
         CalendarOperations Calendar = new CalendarOperations(this);
         System.out.println("Wolny czas: "+ Calendar.zwrocCzasWolnyOdDaty(24));
+        System.out.println("Sredni czas aktywnosci: "+ Calendar.wyliczSredniCzasAktywnosci("bieganie"));
 	}
 
 	private void setUpList() {

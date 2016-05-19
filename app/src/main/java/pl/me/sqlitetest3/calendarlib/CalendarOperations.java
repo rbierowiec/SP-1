@@ -121,11 +121,32 @@ public class CalendarOperations {
         List<CalendarEvent> eventy = this.zwrocWydarzeniaPomiedzyDatami(df.format(curDate), df.format(endDate));
 
         for (CalendarEvent event : eventy) {
-            czasWolny = Math.round((event.getStartDate() - curDate.getTime()) / ONE_HOUR_IN_MILLIS)*60;
+            czasWolny = Math.round((event.getStartDate() - curDate.getTime()) / (ONE_HOUR_IN_MILLIS/60));
             break;
         }
 
         return czasWolny;
+    }
+
+    public int wyliczSredniCzasAktywnosci(String slowoKluczowe){
+        final long ONE_MINUTE_IN_MILLIS=60000; //millisecs
+        float sumaCzasow = 0;
+        int iloscWydarzen = 0;
+
+        List<CalendarEvent> eventy = new ArrayList<CalendarEvent>();
+        List<CalendarEvent> eventyWszystkie = this.zwrocWszystkieWydarzenia();
+
+        for (CalendarEvent event : eventyWszystkie) {
+            if(event.getTitle().toLowerCase().contains(slowoKluczowe.toLowerCase())) {
+                sumaCzasow += (event.getEndDate() - event.getStartDate());
+                iloscWydarzen++;
+            }
+        }
+
+        if (iloscWydarzen > 0)
+            return Math.round(sumaCzasow / iloscWydarzen / ONE_MINUTE_IN_MILLIS);
+        else
+            return 0;
     }
 
 
